@@ -1,7 +1,8 @@
 import express from "express";
 
 const app: express.Application = express();
-const port = 3000;
+const port = process.env.APP_PORT || 3000;
+
 app.get("/", (req, res) => {
   res.send("Virtuon was successfully initialized!");
 });
