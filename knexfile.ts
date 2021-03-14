@@ -38,4 +38,4 @@ const dbConfig = {
   }
 }
 
-module.exports = dbConfig;
+export = dbConfig;
