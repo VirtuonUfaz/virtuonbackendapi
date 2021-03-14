@@ -1,4 +1,4 @@
-import { Knex } from "knex";
+// import { Knex } from "knex";
 
 /* 
 Table Users {
@@ -21,15 +21,15 @@ Table Users {
 }
 */
 
-export async function up(knex: Knex): Promise<void> {
+export async function up(knex): Promise<void> {
     return knex.schema.createTable('users', function(table) {
         table.increments();
-        table.string('username').notNullable();
+        table.string('username').notNullable().unique();
         table.string('first_name').notNullable();
         table.string('last_name').notNullable();
         table.enu('gender', ['Male', 'Female']).notNullable();
-        table.string('phone_number').notNullable();
-        table.string('email').notNullable();
+        table.string('phone_number').notNullable().unique();
+        table.string('email').notNullable().unique();
         table.timestamp('birth_date').notNullable();
         table.string('auth_token');
         table.boolean('phone_verified').notNullable().defaultTo(false);
@@ -42,6 +42,6 @@ export async function up(knex: Knex): Promise<void> {
 }
 
 
-export async function down(knex: Knex): Promise<void> {
+// export async function down(knex): Promise<void> {
     return knex.schema.dropTable('users');
 }
