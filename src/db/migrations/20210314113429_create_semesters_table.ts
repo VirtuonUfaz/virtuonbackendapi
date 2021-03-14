@@ -5,7 +5,7 @@ import { Knex } from "knex";
 export async function up(knex): Promise<void> {
     return knex.schema.createTable('semesters', function(table) {
         table.increments();
-        table.string("name")
+        table.string("name").notNullable()
 
         table.timestamps(); // created_at, updated_at
     })

@@ -7,7 +7,6 @@ export async function up(knex): Promise<void> {
         table.increments();
         table
         .integer("user_id")
-        .primary()
         .references("id")
         .inTable("users")
         .onUpdate("CASCADE")

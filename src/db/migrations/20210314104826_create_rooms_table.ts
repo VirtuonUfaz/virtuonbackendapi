@@ -5,7 +5,7 @@ import { Knex } from "knex";
 export async function up(knex): Promise<void> {
     return knex.schema.createTable('rooms', function(table) {
         table.increments();
-        table.integer("number");
+        table.integer("number").notNullable().unique();
         table
         .integer("room_type_id")
         .references("id")

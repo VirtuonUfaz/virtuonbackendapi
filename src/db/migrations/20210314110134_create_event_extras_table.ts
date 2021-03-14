@@ -11,8 +11,8 @@ export async function up(knex): Promise<void> {
         .inTable("events")
         .onUpdate("CASCADE")
         .onDelete("CASCADE");    
-		table.string("name");
-		table.string("host");
+		table.string("name").notNullable();
+		table.string("host").notNullable();
 		table.integer("participant_number");
 		table.boolean('is_public');
 
