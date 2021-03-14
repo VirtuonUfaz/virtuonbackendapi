@@ -12,11 +12,11 @@ const dbConfig = {
     },
     migrations: {
       extension: "ts",
-      directory: __dirname + "/db/migrations",
+      directory: __dirname + "/src/db/migrations",
     },
     seeds: {
       extension: "ts",
-      directory: __dirname + "/db/seeds",
+      directory: __dirname + "/src/db/seeds",
     },
   },
   production:{
@@ -29,11 +29,11 @@ const dbConfig = {
     },
     migrations: {
       extension: "ts",
-      directory: __dirname + "/db/migrations",
+      directory: __dirname + "/src/db/migrations",
     },
     seeds: {
       extension: "ts",
-      directory: __dirname + "/db/seeds",
+      directory: __dirname + "/src/db/seeds",
     },
   }
 }
