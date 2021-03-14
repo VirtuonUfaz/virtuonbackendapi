@@ -31,13 +31,14 @@ export async function up(knex: Knex): Promise<void> {
         table.string('phone_number').notNullable();
         table.string('email').notNullable();
         table.timestamp('birth_date').notNullable();
-        table.string('auth_token');
+        table.string('otp');
+        table.timestamp('otp_generated_at');
         table.boolean('phone_verified').notNullable().defaultTo(false);
         table.boolean('email_verified').notNullable().defaultTo(false);
         table.boolean('is_blocked').notNullable().defaultTo(false);
         table.string('profile_picture_url');
         table.integer('role_id'); // TODO: foreign key will be within separete migration
-        table.timestamps(); // created_at, updated_at
+        table.timestamps(true, true); // created_at, updated_at
     })
 }
 
