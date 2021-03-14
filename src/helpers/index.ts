@@ -1,3 +1,3 @@
 import * as environmentHelpers from "./environment";
-
-export { environmentHelpers };
+import * as authHelpers from "./auth";
+export { environmentHelpers, authHelpers };

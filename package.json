@@ -21,6 +21,7 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-validator": "^6.10.0",
+    "jsonwebtoken": "^8.5.1",
     "knex": "^0.95.2",
     "knex-paginate": "^2.1.0",
     "pg": "^8.5.1"
