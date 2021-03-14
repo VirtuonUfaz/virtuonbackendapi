@@ -3,19 +3,17 @@ import { Knex } from "knex";
 
 
 export async function up(knex): Promise<void> {
-    return knex.schema.createTable('user_students', function(table) {
+    return knex.schema.createTable('role_permissions', function(table) {
         table
-        .integer("user_id")
-        .primary()
+        .integer("role_id")
         .references("id")
-        .inTable("users")
+        .inTable("roles")
         .onUpdate("CASCADE")
         .onDelete("CASCADE");
-        table.string('student_id').notNullable().unique();
         table
-        .integer("group_id")
+        .integer("permission_id")
         .references("id")
-        .inTable("groups")
+        .inTable("permissions")
         .onUpdate("CASCADE")
         .onDelete("CASCADE");
         table.timestamps(); // created_at, updated_at
@@ -24,5 +22,5 @@ export async function up(knex): Promise<void> {
 
 
 export async function down(knex): Promise<void> {
-    return knex.schema.dropTable('user_students');
+    return knex.schema.dropTable('role_permissions');
 }

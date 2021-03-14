@@ -3,26 +3,27 @@ import { Knex } from "knex";
 
 
 export async function up(knex): Promise<void> {
-    return knex.schema.createTable('user_students', function(table) {
+    return knex.schema.createTable('task_comments', function(table) {
+        table.increments();
+
         table
-        .integer("user_id")
-        .primary()
+        .integer("users_id")
         .references("id")
         .inTable("users")
         .onUpdate("CASCADE")
-        .onDelete("CASCADE");
-        table.string('student_id').notNullable().unique();
+        .onDelete("CASCADE");       
         table
-        .integer("group_id")
+        .integer("task_id")
         .references("id")
-        .inTable("groups")
+        .inTable("tasks")
         .onUpdate("CASCADE")
-        .onDelete("CASCADE");
+        .onDelete("CASCADE");  
+        table.string("comment")
         table.timestamps(); // created_at, updated_at
     })
 }
 
 
 export async function down(knex): Promise<void> {
-    return knex.schema.dropTable('user_students');
+    return knex.schema.dropTable('task_comments');
 }

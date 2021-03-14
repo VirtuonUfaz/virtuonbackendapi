@@ -3,20 +3,21 @@ import { Knex } from "knex";
 
 
 export async function up(knex): Promise<void> {
-    return knex.schema.createTable('user_affairs', function(table) {
+    return knex.schema.createTable('rooms', function(table) {
+        table.increments();
+        table.integer("number");
         table
-        .integer("user_id")
-        .primary()
+        .integer("room_type_id")
         .references("id")
-        .inTable("users")
+        .inTable("room_types")
         .onUpdate("CASCADE")
         .onDelete("CASCADE");
-        table.enu('Speciality', ['CS', 'GEO', 'CH','PE']).notNullable();
+
         table.timestamps(); // created_at, updated_at
     })
 }
 
 
 export async function down(knex): Promise<void> {
-    return knex.schema.dropTable('user_affairs');
+    return knex.schema.dropTable('rooms');
 }

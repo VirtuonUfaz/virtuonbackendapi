@@ -6,8 +6,8 @@ export async function up(knex): Promise<void> {
         table
         .integer("user_id")
         .primary()
-        .references("users")
-        .inTable("event_types")
+        .references("id")
+        .inTable("users")
         .onUpdate("CASCADE")
         .onDelete("CASCADE");
         table.enu('Speciality', ['CS', 'GEO', 'CH','PE']).notNullable();
