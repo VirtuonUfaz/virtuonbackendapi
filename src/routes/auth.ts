@@ -2,6 +2,7 @@ import {Router} from 'express'
 import jwt from 'jsonwebtoken';
 import { authHelpers } from '../helpers'
 import knex from '../db/connect'
+import { sendOtpMail } from '../helpers/auth';
 
 const JWT_SECRET = 'p5*%e4_+vo*&$5ao^hjk59asoj=2g@=ct+uap5pe@3#gq1%ei9'; // TODO: define in config level
 
@@ -38,8 +39,17 @@ router.get('/login', async (req, res, next) => {
         await knex('users')
             .update({otp, otp_generated_at: knex.fn.now()})
             .where('id', user.id)
-        // TODO for Anday: send an email with content otp to req.query.email
-        res.json({status: 200, msg: "Success"});
+
+        sendOtpMail(otp, req.query.email?.toString() || "", (res, error) => {
+            if(error){
+                res.status(404).json({
+                    status: 404,
+                    msg: `Failed to send OTP`
+                })
+            }else{
+                res.json({status: 200, msg: "Success"});
+            }
+        });
     } catch (err) {
         console.error(err.message);
         res.status(500).json({status: 500, msg: "Internal server error"});
