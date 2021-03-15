@@ -14,6 +14,8 @@ export async function seed(knex: Knex): Promise<void> {
             phone_number: "+994554060514",
             email: "anar.mammad28@gmail.com",
             birth_date: "2000-09-03", // ISO 8601;
+            register_date: "2020-09-03", // ISO 8601;
+            role_id: 1,
         },
         { 
             username: "anday", 
@@ -23,6 +25,8 @@ export async function seed(knex: Knex): Promise<void> {
             phone_number: "+994517748801",
             email: "ipman4819@gmail.com",
             birth_date: "2000-01-13", // ISO 8601;
+            register_date: "2020-09-03", // ISO 8601;
+            role_id: 1,
         }
     ]);
 };
