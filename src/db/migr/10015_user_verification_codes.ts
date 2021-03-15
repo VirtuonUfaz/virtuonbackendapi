@@ -2,7 +2,7 @@ import { Knex } from "knex";
 
 export async function up(knex: Knex): Promise<void> {
     return knex.schema.createTable('user_verification_codes', function(table) {
-        table.increments();
+        table.increments("id").primary();
         table
             .integer("user_id")
             .notNullable()
