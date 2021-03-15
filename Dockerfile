@@ -6,6 +6,6 @@ WORKDIR $APP_DIR
 COPY package.json ./
 RUN npm install
 
-RUN npm -g install knex knex-paginate ts-node ts-node-dev typescript
+RUN npm -g install knex
 
 COPY . .
