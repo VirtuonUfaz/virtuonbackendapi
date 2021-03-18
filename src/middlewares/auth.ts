@@ -1,9 +1,9 @@
+import { Request } from "express";
 import jwt from "jsonwebtoken";
 
-export default function (req, res, next) {
+export default function (req: Request, res, next) {
   // Get token from header
   const token = req.header("x-auth-token");
-
 
   // Check if not token
   if (!token) {
@@ -12,7 +12,7 @@ export default function (req, res, next) {
 
   // Verify token
   try {
-    jwt.verify(token, process.env.JWT_SECRET || "" , (error, decoded) => {
+    jwt.verify(token, process.env.JWT_SECRET || "", (error, decoded: any) => {
       if (error) {
         return res.status(401).json({ msg: "Token is not valid" });
       } else {
@@ -22,7 +22,7 @@ export default function (req, res, next) {
                 id: user.id
             }
         */
-        req.user = decoded.user;
+        req.body.user = decoded?.user;
         next();
       }
     });
