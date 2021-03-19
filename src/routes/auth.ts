@@ -70,7 +70,6 @@ router.post("/login", async (req, res, next) => {
     }
 
     let user: UserType = await dbHelpers.usersDB.getStudentUser(ID);
-    console.log("FIND USER: ", user);
     if (!user)
       // check if user exists
       //TODO: CHECK USER_TEACHERS and USER_AFFAIRS
@@ -117,7 +116,6 @@ router.post("/login", async (req, res, next) => {
 
     jwt.sign(payload, JWT_SECRET, { expiresIn: "24h" }, async (err, token) => {
       if (err) throw err;
-      console.log("JWT: ", token);
       await dbHelpers.usersDB.setUserToken(user.id, token || "");
       res.status(200).json({ status: 200, token });
       if (!token) {
@@ -130,15 +128,14 @@ router.post("/login", async (req, res, next) => {
   }
 });
 
-// @route    GET api/user
+// @route    GET auth/user
 // @desc     Get user by JWT.
 // @access   Private
 router.get("/user", authMiddleware, async (req, res, next) => {
   try {
     // TODO: Get user by JWT
     const userId = req.body.user?.id;
-
-    let user = await dbHelpers.usersDB.getStudentUser(userId);
+    let user = await dbHelpers.usersDB.get(userId);
     const userPayload: UserType = { ...user, auth_token: "" };
     if (!user)
       // check if user exists

@@ -10,11 +10,14 @@ export const getStudentUser = async (studentID: String): Promise<UserType> =>
     })
     .first();
 
-export const setUserToken = async (userId: number, authToken: string): Promise<number> => {
+export const get = async (userId: number): Promise<UserType> =>
+  await knex(TABLE_NAMES.USERS).select("*").where({ id: userId }).first();
+export const setUserToken = async (
+  userId: number,
+  authToken: string
+): Promise<number> => {
   const updateObj: Partial<UserType> = {
-    auth_token: authToken
-  }
-  return await knex(TABLE_NAMES.USERS)
-    .update(updateObj)
-    .where("id", userId);
+    auth_token: authToken,
+  };
+  return await knex(TABLE_NAMES.USERS).update(updateObj).where("id", userId);
 };
