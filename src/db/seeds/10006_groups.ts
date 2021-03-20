@@ -7,5 +7,6 @@ export async function seed(knex: Knex): Promise<void> {
     // Inserts seed entries
     await knex("groups").insert([
         { code: "1", name: "CS-017", year: "l3" },
+        { code: "1", name: "CS-017", year: "l3" },
     ]);
 };
