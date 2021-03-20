@@ -10,7 +10,8 @@ export async function up(knex: Knex): Promise<void> {
             .inTable("users")
             .onUpdate("CASCADE")
             .onDelete("CASCADE");
-        table.string('Speciality').notNullable();
+        table.enu('year', ['l0', 'l1','l2','l3','master', 'graduated']).notNullable();
+        table.string('affairs_id').notNullable().unique();
         table.timestamps();
     })
 }
