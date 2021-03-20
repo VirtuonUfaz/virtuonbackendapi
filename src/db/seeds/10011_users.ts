@@ -71,6 +71,17 @@ export async function seed(knex: Knex): Promise<void> {
             birth_date: "1920-01-13", // ISO 8601;
             register_date: "2020-09-03", // ISO 8601;
             role_id: 1,
-        }                  
+        },
+        { 
+            username: "turqay", 
+            first_name: "Turqay",
+            last_name: "Umudzade",
+            gender: "Male",
+            phone_number: "+994703008812",
+            email: "bmlk3644j@gmail.com",
+            birth_date: "2000-01-01", // ISO 8601;
+            register_date: "2020-09-04", // ISO 8601;
+            role_id: 1,
+        },                  
     ]);
 };
