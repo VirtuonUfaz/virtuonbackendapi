@@ -16,7 +16,7 @@ router.post("/check", async (req, res, next) => {
   try {
     const ID = req.body.ID;
     if (!ID)
-      res.json({
+      res.status(400).send({
         status: 400,
         msg: "Query parameter 'ID' cannot be empty",
       });
@@ -25,12 +25,12 @@ router.post("/check", async (req, res, next) => {
     if (!user)
       //TODO: CHECK USER_TEACHERS and USER_AFFAIRS
       // check if user exists
-      res.status(404).json({
+      res.status(404).send({
         status: 404,
         msg: `User ${ID} not found`,
       });
     if (user.is_blocked)
-      res.status(403).json({
+      res.status(403).send({
         status: 403,
         msg: `User ${ID} is blocked. Please contact the platform administration`,
       });
@@ -40,17 +40,17 @@ router.post("/check", async (req, res, next) => {
     sendOtpMail(otp, user.email, (result, error) => {
       if (error) {
         console.log("MAIL OTP ERROR: ", error);
-        res.status(404).json({
+        res.status(404).send({
           status: 404,
           msg: `Failed to send OTP`,
         });
       } else {
-        res.status(200).json({ status: 200, msg: "Success" });
+        res.status(200).send({ status: 200, msg: "Success" });
       }
     });
   } catch (err) {
     console.error(err.message);
-    res.status(500).json({ status: 500, msg: "Internal server error" });
+    res.status(500).send({ status: 500, msg: "Internal server error" });
   }
 });
 
@@ -62,7 +62,7 @@ router.post("/login", async (req, res, next) => {
     const { OTP, ID } = req.body;
     console.log("OTP: ", OTP, " ID: ", ID);
     if (!OTP || !ID) {
-      res.json({
+      res.status(400).send({
         status: 400,
         msg: `Body parameter '${ID ? "ID" : "OTP"}' cannot be empty`,
       });
@@ -73,12 +73,12 @@ router.post("/login", async (req, res, next) => {
     if (!user)
       // check if user exists
       //TODO: CHECK USER_TEACHERS and USER_AFFAIRS
-      res.status(404).json({
+      res.status(404).send({
         status: 404,
         msg: `User ${req.query.ID} not found`,
       });
     if (user.is_blocked)
-      res.status(403).json({
+      res.status(403).send({
         status: 403,
         msg: `User ${req.query.ID} is blocked. Please contact the platform administration`,
       });
@@ -89,7 +89,7 @@ router.post("/login", async (req, res, next) => {
     }: VerificationCodeType = await dbHelpers.VerificationCodesDB.get(user.id);
 
     if (OTP !== validOTP) {
-      res.json({
+      res.status(400).send({
         status: 400,
         msg: `OTP is invalid`,
       });
@@ -102,7 +102,7 @@ router.post("/login", async (req, res, next) => {
       5 * 60 * 1000
     ) {
       // 5 minutes
-      res.json({
+      res.status(400).send({
         status: 400,
         msg: `OTP is expired`,
       });
@@ -117,14 +117,14 @@ router.post("/login", async (req, res, next) => {
     jwt.sign(payload, JWT_SECRET, { expiresIn: "24h" }, async (err, token) => {
       if (err) throw err;
       await dbHelpers.usersDB.setUserToken(user.id, token || "");
-      res.status(200).json({ status: 200, token });
+      res.status(200).send({ status: 200, token });
       if (!token) {
-        res.status(404).json({ msg: "Failed to create JWT" });
+        res.status(404).send({ msg: "Failed to create JWT" });
       }
     });
   } catch (err) {
     console.error(err.message);
-    res.status(500).json({ status: 500, msg: "Internal server error" });
+    res.status(500).send({ status: 500, msg: "Internal server error" });
   }
 });
 
@@ -133,23 +133,31 @@ router.post("/login", async (req, res, next) => {
 // @access   Private
 router.get("/user", authMiddleware, async (req, res, next) => {
   try {
+    // Get token from header
+    const token = req.header("x-auth-token");
     // TODO: Get user by JWT
     const userId = req.body.user?.id;
-    let user = await dbHelpers.usersDB.get(userId);
-    const userPayload: UserType = { ...user, auth_token: "" };
+    let user: UserType = await dbHelpers.usersDB.get(userId);
+
     if (!user)
       // check if user exists
       //TODO: CHECK USER_TEACHERS and USER_AFFAIRS
-      res.status(404).json({
+      res.status(404).send({
         status: 404,
         msg: `User ${req.query.ID} not found`,
       });
     if (user.is_blocked)
-      res.status(403).json({
+      res.status(403).send({
         status: 403,
         msg: `User ${req.query.ID} is blocked. Please contact the platform administration`,
       });
-    res.status(200).json(userPayload);
+    if (user.auth_token !== token)
+      res.status(402).send({
+        status: 402,
+        msg: `Wrong token`,
+      });
+    const userPayload: UserType = { ...user, auth_token: "" };
+    res.status(200).send(userPayload);
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server Error");
