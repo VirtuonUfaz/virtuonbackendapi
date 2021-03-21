@@ -5,6 +5,7 @@ import knex from "../db/connect";
 import { sendOtpMail } from "../helpers/auth";
 import { usersDB, UserType, VerificationCodeType } from "../helpers/db";
 import { authMiddleware } from "../middlewares";
+import { UserStudentType } from "../helpers/db/types";
 const JWT_SECRET = "p5*%e4_+vo*&$5ao^hjk59asoj=2g@=ct+uap5pe@3#gq1%ei9"; // TODO: define in config level
 
 const router = Router();
@@ -21,7 +22,7 @@ router.post("/check", async (req, res, next) => {
         msg: "Query parameter 'ID' cannot be empty",
       });
 
-    let user: UserType = await dbHelpers.usersDB.getStudentUser(ID);
+    let user: UserType = await dbHelpers.usersDB.getByID(ID);
     if (!user) {
       //TODO: CHECK USER_TEACHERS and USER_AFFAIRS
       // check if user exists
@@ -70,7 +71,7 @@ router.post("/login", async (req, res, next) => {
       });
     }
 
-    let user: UserType = await dbHelpers.usersDB.getStudentUser(ID);
+    const user = await dbHelpers.usersDB.getByID(ID);
     if (!user) {
       // check if user exists
       //TODO: CHECK USER_TEACHERS and USER_AFFAIRS
