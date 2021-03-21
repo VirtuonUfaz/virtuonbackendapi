@@ -24,58 +24,17 @@ enum Types{
   Final = 'final',
   Retake = 'retake'
 }
-
-export interface UserType {
-  id: number;
-  user_name: String;
-  first_name: String;
-  last_name: String;
-  gender: Gender;
-  phone_number: String;
-  email: String;
-  birth_date: Date;
-  register_date: Date;
-  auth_token: String;
-  phone_verified: Boolean;
-  email_verified: Boolean;
-  is_blocked: Boolean;
-  profile_picture_url: String;
-  status: Status;
-  role_id: number;
-  created_at: Date;
-  updated_at: Date;
+enum Priority{
+  Urgent = 'urgent', 
+  High = 'high', 
+  Normal = 'normal',
+  Low =  'low'
+}
+enum Events{
+  Started = 'started', 
+  Ended = 'ended'
 }
 
-export interface UserStudentType {
-  user_id: number;
-  student_id: String;
-  group_id: number;
-  created_at: Date;
-  updated_at: Date;
-}
-
-export interface UserTeacherType {
-  user_id: number;
-  teacher_id: String;
-  speciality: String;
-  created_at: Date;
-  updated_at: Date;
-}
-export interface UserAffairsType {
-  user_id: number;
-  affairs_id: String;
-  year: Years;
-  created_at: Date;
-  updated_at: Date;
-}
-export interface VerificationCodeType {
-  id: number;
-  user_id: number;
-  phone_code: String;
-  email_code: String;
-  created_at: Date;
-  generation_trials: number;
-}
 
 export interface ArchiveVideoLogsType {
   id: number;
@@ -145,7 +104,7 @@ export interface EventTypesType {
   created_at: Date;
   updated_at: Date;
 }
-export interface EventRegistersType {
+export interface EventsType {
   id: number;
   event_type_id: number;
   room_id: number;
@@ -178,6 +137,7 @@ export interface GradesType {
 export interface GroupCoursesType {
   group_id: number;
   course_id : number;
+  created_at: Date;
   updated_at: Date;
 }
 export interface GroupsType {
@@ -239,17 +199,231 @@ export interface JournalsType {
   created_at: Date;
   updated_at: Date;
 }
-export interface PrivateTasksType {
+
+export interface KnexMigrationsType {
+  id  : number;
+  name : String;
+  batch: number;
+  updated_at: Date;
+}
+
+export interface KnexMigrationsLock {
+  index  : number;
+  is_locked : number;
+
+}
+
+export interface LogsType {
   id: number;
-  author : number;
+  user_id : number;
+  event: Events;
+  operation: String;
+  ip: String;
+  created_at: Date;
+  updated_at: Date;
+}
+
+
+export interface NotificationsType {
+  id: number;
+  user_id : number;
   title: String;
   description: String;
-  upload_date: Date;
-  publication_date : Date;
+  link: String;
+  is_seen : Boolean;
+  created_at: Date;
+  updated_at: Date;
+}
+
+export interface ParticipationType {
+  event_id  : number;
+  user_id : number;
+  created_at: Date;
+  updated_at: Date;
+}
+export interface PermissionType {
+  id  : number;
+  description : String;
+  created_at: Date;
+  updated_at: Date;
+}
+export interface PrivateDocumentTypeType {
+  id  : number;
+  name : String;
+  created_at: Date;
+  updated_at: Date;
+}
+export interface PrivateDocumentsType {
+  id: number;
+  private_document_type_id : number;
+  user_id: number;
+  year: number;
+  is_accessible: Boolean;
+  created_at: Date;
+  updated_at: Date;
+}
+
+
+export interface PrivateTasksType {
+  id: number;
+  user_id : number;
+  title: String;
+  description: String;
+  priority: Date;
+  is_resolved : Boolean;
+  deadline: Date;
+  created_at: Date;
+  updated_at: Date;
+}
+export interface RolePermissionType {
+  role_id  : number;
+  permission_id : number;
+  created_at: Date;
+  updated_at: Date;
+}
+export interface RolesType {
+  role_id  : number;
+  name : String;
+  created_at: Date;
+  updated_at: Date;
+}
+
+export interface RolesTypesType {
+  id  : number;
+  name : String;
+  color  : String;
+  created_at: Date;
+  updated_at: Date;
+}
+
+export interface RoomsType {
+  id  : number;
+  number : number;
+  room_type_id  : number;
+  created_at: Date;
+  updated_at: Date;
+}
+
+export interface Semesters {
+  id  : number;
+  name : String;
+  start_date  : Date;
+  end_date: Date;
+  created_at: Date;
+  updated_at: Date;
+}
+
+export interface TaskCommentsType {
+  id  : number;
+  users_id : number;
+  task_id  : number;
+  comment: String;
+  created_at: Date;
+  updated_at: Date;
+}
+export interface TaskUploadsType {
+  id  : number;
+  task_id : number;
+  student_id  : number;
   file: String;
-  journal: String;
-  publisher: String;
-  issue: number;
+  created_at: Date;
+  updated_at: Date;
+}
+export interface TaskType {
+  id  : number;
+  name : String;
+  description : String;
+  teacher : number;
+  course  : number;
+  created_at: Date;
+  updated_at: Date;
+}
+
+export interface TicketMessagesType {
+  id  : number;
+  ticket_id : number;
+  author_id : number;
+  content : String;
+  created_at: Date;
+  updated_at: Date;
+}
+
+export interface TicketUploadsType {
+  id  : number;
+  ticket_id : number;
+  author_id : number;
+  file : String;
+  created_at: Date;
+  updated_at: Date;
+}
+
+export interface TicketsType {
+  id  : number;
+  author_id : number;
+  priority : Priority;
+  title : String;
+  body : String;
+  status : Status;
+  created_at: Date;
+  updated_at: Date;
+}
+
+
+export interface UserType {
+  id: number;
+  user_name: String;
+  first_name: String;
+  last_name: String;
+  gender: Gender;
+  phone_number: String;
+  email: String;
+  birth_date: Date;
+  register_date: Date;
+  auth_token: String;
+  phone_verified: Boolean;
+  email_verified: Boolean;
+  is_blocked: Boolean;
+  profile_picture_url: String;
+  status: Status;
+  role_id: number;
+  created_at: Date;
+  updated_at: Date;
+}
+
+export interface UserStudentType {
+  user_id: number;
+  student_id: String;
+  group_id: number;
+  created_at: Date;
+  updated_at: Date;
+}
+
+export interface UserTeacherType {
+  user_id: number;
+  teacher_id: String;
+  speciality: String;
+  created_at: Date;
+  updated_at: Date;
+}
+export interface UserAffairsType {
+  user_id: number;
+  affairs_id: String;
+  year: Years;
+  created_at: Date;
+  updated_at: Date;
+}
+export interface VerificationCodeType {
+  id: number;
+  user_id: number;
+  phone_code: String;
+  email_code: String;
+  created_at: Date;
+  generation_trials: number;
+}
+
+export interface VideoArchivesType {
+  id: number;
+  event_id: number;
   created_at: Date;
   updated_at: Date;
 }
