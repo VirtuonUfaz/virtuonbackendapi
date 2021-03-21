@@ -1,10 +1,10 @@
-import { UserType } from ".";
+import { TypesDB } from ".";
 import { TABLE_NAMES } from "../../config";
 import knex from "../../db/connect";
 import { UserAffairsType, UserStudentType, UserTeacherType } from "./types";
 export const getStudentUser = async (
   studentID: String
-): Promise<UserType & UserStudentType> =>
+): Promise<TypesDB.UserType & TypesDB.UserStudentType> =>
   await knex(TABLE_NAMES.USER_STUDENTS + " as us")
     .select("us.*", "u.*")
     .leftJoin(TABLE_NAMES.USERS + " as u", "u.id", "us.user_id")
@@ -15,7 +15,7 @@ export const getStudentUser = async (
 
 export const getTeacherUser = async (
   teacherID: String
-): Promise<UserType & UserTeacherType> =>
+): Promise<TypesDB.UserType & TypesDB.UserTeacherType> =>
   await knex(TABLE_NAMES.USER_TEACHERS + " as ut")
     .select("ut.*", "u.*")
     .leftJoin(TABLE_NAMES.USERS + " as u", "u.id", "ut.user_id")
@@ -25,7 +25,7 @@ export const getTeacherUser = async (
     .first();
 export const getAffairsUser = async (
   affairsID: String
-): Promise<UserType & UserAffairsType> =>
+): Promise<TypesDB.UserType & TypesDB.UserAffairsType> =>
   await knex(TABLE_NAMES.USER_AFFAIRS + " as ua")
     .select("ua.*", "u.*")
     .leftJoin(TABLE_NAMES.USERS + " as u", "u.id", "ua.user_id")
@@ -37,9 +37,9 @@ export const getAffairsUser = async (
 export const getByID = async (
   ID: String
 ): Promise<
-  | (UserType & UserStudentType)
-  | (UserType & UserTeacherType)
-  | (UserType & UserAffairsType)
+  | (TypesDB.UserType & TypesDB.UserStudentType)
+  | (TypesDB.UserType & TypesDB.UserTeacherType)
+  | (TypesDB.UserType & TypesDB.UserAffairsType)
 > => {
   return (
     (await getStudentUser(ID)) ||
@@ -48,14 +48,14 @@ export const getByID = async (
   );
 };
 
-export const get = async (userId: number): Promise<UserType> =>
+export const get = async (userId: number): Promise<TypesDB.UserType> =>
   await knex(TABLE_NAMES.USERS).select("*").where({ id: userId }).first();
 
 export const setUserToken = async (
   userId: number,
   authToken: string
 ): Promise<number> => {
-  const updateObj: Partial<UserType> = {
+  const updateObj: Partial<TypesDB.UserType> = {
     auth_token: authToken,
   };
   return await knex(TABLE_NAMES.USERS).update(updateObj).where("id", userId);

@@ -1,7 +1,7 @@
-import { VerificationCodeType } from ".";
+import { TypesDB } from ".";
 import { TABLE_NAMES } from "../../config";
 import knex from "../../db/connect";
-export const get = async (userId: number): Promise<VerificationCodeType> =>
+export const get = async (userId: number): Promise<TypesDB.VerificationCodeType> =>
   await knex(TABLE_NAMES.USER_VERIFICATION_CODES)
     .select("*")
     .where("user_id", userId)
@@ -10,7 +10,7 @@ export const get = async (userId: number): Promise<VerificationCodeType> =>
 export const create = async (
   otp: String,
   userId: number
-): Promise<VerificationCodeType> =>
+): Promise<TypesDB.VerificationCodeType> =>
   await knex(TABLE_NAMES.USER_VERIFICATION_CODES).insert({
     user_id: userId,
     email_code: otp,
@@ -20,7 +20,7 @@ export const create = async (
 
 export const update = async (
   otp: String,
-  verificationCode: VerificationCodeType
+  verificationCode: TypesDB.VerificationCodeType
 ): Promise<number> =>
   await knex(TABLE_NAMES.USER_VERIFICATION_CODES)
     .update({
@@ -33,7 +33,7 @@ export const update = async (
 export const createOrUpdate = async (
   otp: String,
   userId: number
-): Promise<VerificationCodeType> => {
+): Promise<TypesDB.VerificationCodeType> => {
   const verificationCode = await get(userId);
   if (verificationCode) {
     await update(otp, verificationCode);
