@@ -20,7 +20,7 @@ router.post("/check", async (req, res, next) => {
     if (!ID)
       return res.json({
         status: 400,
-        msg: "Query parameter 'ID' cannot be empty",
+        msg: "Body parameter 'ID' cannot be empty",
       });
 
     let user: UserType = await dbHelpers.usersDB.getByID(ID);
