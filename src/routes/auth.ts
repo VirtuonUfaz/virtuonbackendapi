@@ -3,7 +3,8 @@ import jwt, { VerifyCallback } from "jsonwebtoken";
 import { authHelpers, dbHelpers } from "../helpers";
 import knex from "../db/connect";
 import { sendOtpMail } from "../helpers/auth";
-import { usersDB, UserType, VerificationCodeType } from "../helpers/db";
+import { usersDB } from "../helpers/db";
+import { UserType, VerificationCodeType } from "../helpers/db/types";
 import { authMiddleware } from "../middlewares";
 import { UserStudentType } from "../helpers/db/types";
 const JWT_SECRET = "p5*%e4_+vo*&$5ao^hjk59asoj=2g@=ct+uap5pe@3#gq1%ei9"; // TODO: define in config level

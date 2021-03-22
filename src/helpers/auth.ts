@@ -2,7 +2,7 @@ import { generate, Options } from "./otpGenerator";
 import nodemailer from "nodemailer";
 import { validateEmail } from "./validators";
 import { authHelpers, dbHelpers } from ".";
-import { UserType } from "./db";
+import { UserType } from "./db/types";
 const virtuonEmail = "virtuon2021@gmail.com";
 const transporter = nodemailer.createTransport({
   service: "gmail",
