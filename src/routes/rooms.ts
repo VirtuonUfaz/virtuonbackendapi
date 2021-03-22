@@ -1,16 +1,15 @@
 import { Router } from "express";
-import knex from "../db/connect";
+import { get } from "../helpers/db/rooms";
 import auth from '../middlewares/auth';
 
 const router = Router();
 
 router.get('/', auth, async (req, res, next) => {
     // TODO: check if user has permisson to see rooms
-    let rooms = await knex('rooms')
-                    .select('*')
-                    .leftJoin('room_types', 'rooms.room_type_id', 'room_types.id');
-
-    res.json(rooms);
+    return res.json({
+        status: 200, 
+        grades: await get()
+    })
 });
 
 export default router;
