@@ -269,7 +269,7 @@ export interface PrivateTasksType {
   user_id : number;
   title: String;
   description: String;
-  priority: Date;
+  priority: String;
   is_resolved : Boolean;
   deadline: Date;
   created_at: Date;
