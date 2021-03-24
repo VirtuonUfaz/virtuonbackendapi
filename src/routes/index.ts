@@ -1,4 +1,5 @@
 import { Application } from "express";
+import assignmentsRoutes from './assignments'
 import authRoutes from './auth'
 import gradesRoutes from './grades'
 import roomsRoutes from './rooms'
@@ -9,4 +10,5 @@ export default function(app: Application){
     app.use('/auth', authRoutes)
     app.use('/tasks', tasksRoutes)
     app.use('/grades', gradesRoutes)
+    app.use('/assignments', assignmentsRoutes)
 }
