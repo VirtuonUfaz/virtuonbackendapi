@@ -2,14 +2,16 @@ import { generate, Options } from "./otpGenerator";
 import nodemailer from "nodemailer";
 import { validateEmail } from "./validators";
 import { authHelpers, dbHelpers } from ".";
-import { UserType } from "./db";
-const virtuonEmail = "virtuon2021@gmail.com";
+import { UserType } from "./db/types";
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: process.env.MAIL_HOST,
+  port: 587,
+  secure: false, 
   auth: {
-    user: virtuonEmail,
+    user: process.env.MAIL_USER,
     pass: process.env.MAIL_PASSWORD,
   },
+  tls: { rejectUnauthorized: false }
 });
 export const generateOtp = (): String => {
   const options: Options = {
@@ -31,10 +33,14 @@ export const sendOtpMail = (
     return;
   }
   const mailOptions = {
-    from: virtuonEmail,
+    from: process.env.MAIL_USER,
     to: email,
     subject: "Virtuon OTP",
-    text: `Your code: ${otp}`,
+    html: 
+      `<p> Dear Student, <br><br>
+      The OTP is <code>${otp}</code>. It is valid for <b>5 minutes</b>. <br><br>
+      Sincerely, <br>
+      Virtuon</p>`,
   };
   transporter.sendMail(mailOptions, (error, info) => {
     let response = "Email sent: " + info?.response;
