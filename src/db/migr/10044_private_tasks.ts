@@ -12,7 +12,7 @@ export async function up(knex: Knex): Promise<void> {
             .onDelete("CASCADE");  
         table.string("title").notNullable();
         table.string("description");
-        table.enu('priority', ['urgent', 'high', 'normal', 'low']).notNullable().defaultTo('normal');
+        table.string('priority').notNullable().defaultTo('default');
         table.boolean("is_resolved").notNullable().defaultTo(false);
         table.timestamp("deadline");
         table.timestamps();

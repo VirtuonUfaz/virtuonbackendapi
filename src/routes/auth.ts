@@ -3,8 +3,10 @@ import jwt, { VerifyCallback } from "jsonwebtoken";
 import { authHelpers, dbHelpers } from "../helpers";
 import knex from "../db/connect";
 import { sendOtpMail } from "../helpers/auth";
-import { usersDB, UserType, VerificationCodeType } from "../helpers/db";
+import { usersDB } from "../helpers/db";
+import { UserType, VerificationCodeType } from "../helpers/db/types";
 import { authMiddleware } from "../middlewares";
+import { UserStudentType } from "../helpers/db/types";
 const JWT_SECRET = "p5*%e4_+vo*&$5ao^hjk59asoj=2g@=ct+uap5pe@3#gq1%ei9"; // TODO: define in config level
 
 const router = Router();
@@ -16,41 +18,43 @@ router.post("/check", async (req, res, next) => {
   try {
     const ID = req.body.ID;
     if (!ID)
-      res.status(400).send({
+      return res.json({
         status: 400,
-        msg: "Query parameter 'ID' cannot be empty",
+        msg: "Body parameter 'ID' cannot be empty",
       });
 
-    let user: UserType = await dbHelpers.usersDB.getStudentUser(ID);
-    if (!user)
+    let user: UserType = await dbHelpers.usersDB.getByID(ID);
+    if (!user) {
       //TODO: CHECK USER_TEACHERS and USER_AFFAIRS
       // check if user exists
-      res.status(404).send({
+      return res.json({
         status: 404,
         msg: `User ${ID} not found`,
       });
-    if (user.is_blocked)
-      res.status(403).send({
+    }
+    if (user.is_blocked) {
+      return res.json({
         status: 403,
         msg: `User ${ID} is blocked. Please contact the platform administration`,
       });
+    }
 
     const otp = await authHelpers.prepareVerificationCode(user);
 
     sendOtpMail(otp, user.email, (result, error) => {
       if (error) {
         console.log("MAIL OTP ERROR: ", error);
-        res.status(404).send({
+        return res.json({
           status: 404,
           msg: `Failed to send OTP`,
         });
       } else {
-        res.status(200).send({ status: 200, msg: "Success" });
+        return res.json({ status: 200, msg: "Success" });
       }
     });
   } catch (err) {
     console.error(err.message);
-    res.status(500).send({ status: 500, msg: "Internal server error" });
+    return res.json({ status: 500, msg: "Internal server error" });
   }
 });
 
@@ -62,26 +66,27 @@ router.post("/login", async (req, res, next) => {
     const { OTP, ID } = req.body;
     console.log("OTP: ", OTP, " ID: ", ID);
     if (!OTP || !ID) {
-      res.status(400).send({
+      return res.json({
         status: 400,
         msg: `Body parameter '${ID ? "ID" : "OTP"}' cannot be empty`,
       });
-      return;
     }
 
-    let user: UserType = await dbHelpers.usersDB.getStudentUser(ID);
-    if (!user)
+    const user = await dbHelpers.usersDB.getByID(ID);
+    if (!user) {
       // check if user exists
       //TODO: CHECK USER_TEACHERS and USER_AFFAIRS
-      res.status(404).send({
+      return res.json({
         status: 404,
         msg: `User ${req.query.ID} not found`,
       });
-    if (user.is_blocked)
-      res.status(403).send({
+    }
+    if (user.is_blocked) {
+      return res.json({
         status: 403,
         msg: `User ${req.query.ID} is blocked. Please contact the platform administration`,
       });
+    }
 
     const {
       email_code: validOTP,
@@ -89,12 +94,10 @@ router.post("/login", async (req, res, next) => {
     }: VerificationCodeType = await dbHelpers.VerificationCodesDB.get(user.id);
 
     if (OTP !== validOTP) {
-      res.status(400).send({
+      return res.json({
         status: 400,
         msg: `OTP is invalid`,
       });
-
-      return;
     }
 
     if (
@@ -102,11 +105,10 @@ router.post("/login", async (req, res, next) => {
       5 * 60 * 1000
     ) {
       // 5 minutes
-      res.status(400).send({
+      return res.json({
         status: 400,
         msg: `OTP is expired`,
       });
-      return;
     }
     const payload = {
       user: {
@@ -117,14 +119,14 @@ router.post("/login", async (req, res, next) => {
     jwt.sign(payload, JWT_SECRET, { expiresIn: "24h" }, async (err, token) => {
       if (err) throw err;
       await dbHelpers.usersDB.setUserToken(user.id, token || "");
-      res.status(200).send({ status: 200, token });
+      res.json({ status: 200, token });
       if (!token) {
-        res.status(404).send({ msg: "Failed to create JWT" });
+        res.json({ msg: "Failed to create JWT" });
       }
     });
   } catch (err) {
     console.error(err.message);
-    res.status(500).send({ status: 500, msg: "Internal server error" });
+    res.json({ status: 500, msg: "Internal server error" });
   }
 });
 
@@ -142,25 +144,66 @@ router.get("/user", authMiddleware, async (req, res, next) => {
     if (!user)
       // check if user exists
       //TODO: CHECK USER_TEACHERS and USER_AFFAIRS
-      res.status(404).send({
+      return res.json({
         status: 404,
         msg: `User ${req.query.ID} not found`,
       });
     if (user.is_blocked)
-      res.status(403).send({
+      return res.json({
         status: 403,
         msg: `User ${req.query.ID} is blocked. Please contact the platform administration`,
       });
     if (user.auth_token !== token)
-      res.status(402).send({
+      return res.json({
         status: 402,
         msg: `Wrong token`,
       });
+
     const userPayload: UserType = { ...user, auth_token: "" };
-    res.status(200).send(userPayload);
+    res.send(userPayload);
   } catch (err) {
     console.error(err.message);
-    res.status(500).send("Server Error");
+    res.send("Server Error");
+  }
+});
+
+// @route    GET auth/logout
+// @desc     Logout.
+// @access   Public
+router.post("/logout", authMiddleware, async (req, res, next) => {
+  try {
+    // Get token from header
+    const token = req.header("x-auth-token");
+    // TODO: Get user by JWT
+    const userId = req.body.user?.id;
+    let user: UserType = await dbHelpers.usersDB.get(userId);
+
+    if (!user) {
+      // check if user exists
+      //TODO: CHECK USER_TEACHERS and USER_AFFAIRS
+      return res.json({
+        status: 404,
+        msg: `User ${req.query.ID} not found`,
+      });
+    }
+    if (user.is_blocked) {
+      return res.json({
+        status: 403,
+        msg: `User ${req.query.ID} is blocked. Please contact the platform administration`,
+      });
+    }
+    if (user.auth_token !== token) {
+      return res.json({
+        status: 403,
+        msg: `Wrong token`,
+      });
+    }
+    await dbHelpers.usersDB.setUserToken(user.id, "");
+    const userPayload: UserType = { ...user, auth_token: "" };
+    res.send(userPayload);
+  } catch (err) {
+    console.error(err.message);
+    res.send("Server Error");
   }
 });
 
