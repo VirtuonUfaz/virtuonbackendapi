@@ -93,6 +93,28 @@ export async function seed(knex: Knex): Promise<void> {
             birth_date: "2000-08-03", // ISO 8601;
             register_date: "2020-09-03", // ISO 8601;
             role_id: 1,
-        },          
+        },         
+        { 
+            username: "samer", 
+            first_name: "Samer",
+            last_name: "Elzant",
+            gender: "Male",
+            phone_number: "+994511233454",
+            email: "samer.elzant@ufaz.az",
+            birth_date: "1900-01-13", // ISO 8601;
+            register_date: "2020-09-03", // ISO 8601;
+            role_id: 1,
+        },
+        { 
+            username: "javid", 
+            first_name: "Javid",
+            last_name: "Khalilov",
+            gender: "Male",
+            phone_number: "+994511233455",
+            email: "javid.khalilov@ufaz.az",
+            birth_date: "1900-01-13", // ISO 8601;
+            register_date: "2020-09-03", // ISO 8601;
+            role_id: 1,
+        }, 
     ]);
 };
