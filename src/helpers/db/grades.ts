@@ -4,8 +4,8 @@ import knex from "../../db/connect";
 
 export const getStudentGrades = async (
     studentId: number,
-    year?: string,      // TODO
-    semester?: number,  // TODO
+    year?: string,    
+    semester?: number,
     subject?: string    
 ) => await knex(TABLE_NAMES.GRADES)
         .leftJoin(TABLE_NAMES.EXAMS, `${TABLE_NAMES.GRADES}.exam_id`, `${TABLE_NAMES.EXAMS}.id`)

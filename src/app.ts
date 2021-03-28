@@ -11,5 +11,5 @@ app.get("/", (req, res) => {
   res.send("Virtuon was successfully initialized!");
 });
 app.listen(port, () => {
-  return console.log(`server is listening on ${port}`);
+  console.log(`server is listening on ${port}`);
 });

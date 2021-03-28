@@ -7,7 +7,7 @@ import { usersDB } from "../helpers/db";
 import { UserType, VerificationCodeType } from "../helpers/db/types";
 import { authMiddleware } from "../middlewares";
 import { UserStudentType } from "../helpers/db/types";
-const JWT_SECRET = "p5*%e4_+vo*&$5ao^hjk59asoj=2g@=ct+uap5pe@3#gq1%ei9"; // TODO: define in config level
+const JWT_SECRET = "p5*%e4_+vo*&$5ao^hjk59asoj=2g@=ct+uap5pe@3#gq1%ei9";
 
 const router = Router();
 
@@ -25,8 +25,6 @@ router.post("/check", async (req, res, next) => {
 
     let user: UserType = await dbHelpers.usersDB.getByID(ID);
     if (!user) {
-      //TODO: CHECK USER_TEACHERS and USER_AFFAIRS
-      // check if user exists
       return res.json({
         status: 404,
         msg: `User ${ID} not found`,
@@ -43,7 +41,6 @@ router.post("/check", async (req, res, next) => {
 
     sendOtpMail(otp, user.email, (result, error) => {
       if (error) {
-        console.log("MAIL OTP ERROR: ", error);
         return res.json({
           status: 404,
           msg: `Failed to send OTP`,
@@ -64,7 +61,6 @@ router.post("/check", async (req, res, next) => {
 router.post("/login", async (req, res, next) => {
   try {
     const { OTP, ID } = req.body;
-    console.log("OTP: ", OTP, " ID: ", ID);
     if (!OTP || !ID) {
       return res.json({
         status: 400,
@@ -74,8 +70,6 @@ router.post("/login", async (req, res, next) => {
 
     const user = await dbHelpers.usersDB.getByID(ID);
     if (!user) {
-      // check if user exists
-      //TODO: CHECK USER_TEACHERS and USER_AFFAIRS
       return res.json({
         status: 404,
         msg: `User ${req.query.ID} not found`,
@@ -137,13 +131,11 @@ router.get("/user", authMiddleware, async (req, res, next) => {
   try {
     // Get token from header
     const token = req.header("x-auth-token");
-    // TODO: Get user by JWT
     const userId = req.body.user?.id;
     let user: UserType = await dbHelpers.usersDB.get(userId);
 
     if (!user)
       // check if user exists
-      //TODO: CHECK USER_TEACHERS and USER_AFFAIRS
       return res.json({
         status: 404,
         msg: `User ${req.query.ID} not found`,
@@ -174,13 +166,11 @@ router.post("/logout", authMiddleware, async (req, res, next) => {
   try {
     // Get token from header
     const token = req.header("x-auth-token");
-    // TODO: Get user by JWT
     const userId = req.body.user?.id;
     let user: UserType = await dbHelpers.usersDB.get(userId);
 
     if (!user) {
       // check if user exists
-      //TODO: CHECK USER_TEACHERS and USER_AFFAIRS
       return res.json({
         status: 404,
         msg: `User ${req.query.ID} not found`,
